@@ -1,0 +1,18 @@
+# ==============================================================================
+# InterviewMate Dependencies
+# ==============================================================================
+# Designed for Google Colab (Tesla T4 GPU with CUDA 12.x) and Linux Mint local testing.
+# For Google Colab fine-tuning and inference:
+torch>=2.2.0
+transformers>=4.41.0
+peft>=0.11.0
+accelerate>=0.30.0
+bitsandbytes>=0.43.1
+datasets>=2.19.0
+trl>=0.8.6
+gradio>=4.31.0
+scipy>=1.11.0
+numpy>=1.24.0
+sentencepiece>=0.2.0
+protobuf>=4.25.0
+pydantic>=2.7.0

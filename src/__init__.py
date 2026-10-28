@@ -1,0 +1,3 @@
+"""
+InterviewMate Package Initialization
+"""

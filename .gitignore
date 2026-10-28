@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Model Checkpoints & Adapters (Large weights)
+saved_adapter/
+checkpoints/
+results/
+runs/
+*.bin
+*.safetensors
+*.pt
+*.pth
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# IDE and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs and temp files
+*.log
+tmp/
+temp/
