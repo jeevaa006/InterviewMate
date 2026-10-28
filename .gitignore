@@ -31,7 +31,9 @@ runs/
 .DS_Store
 Thumbs.db
 
-# Logs and temp files
+# Logs, environment and temp files
 *.log
+*.env
+.env
 tmp/
 temp/

@@ -1,260 +1,332 @@
-# 🎓 InterviewMate — Interview-Specialized AI Model & Mock Interviewer
+# 🎓 InterviewMate — AI Mock Interviewer
 
-> **A Complete College Capstone Project**  
-> Fine-tuned Open-Weight Language Model (`Qwen2.5-1.5B-Instruct`) using **4-bit QLoRA** on Google Colab free tier resources, paired with a structured rubric scoring engine and an interactive Gradio web application.
+> **Deep Learning Capstone Project | Course 24ADI006**  
+> An open-weight Transformer language model (`Qwen2.5-1.5B-Instruct`) specialized via **4-bit QLoRA** parameter-efficient fine-tuning on Google Colab free tier GPU resources, paired with a defensive 4-pillar rubric evaluation engine and an interactive Gradio web application.
+
+---
+
+## 👨‍🎓 Student & Course Information
+
+| Parameter | Details |
+| :--- | :--- |
+| **Course Code** | **24ADI006** |
+| **Course Name** | **Deep Learning** |
+| **Student Name** | **jeevaaanantham** |
+| **Roll Number** | **24BAD047** |
+| **Project Title** | **InterviewMate – AI Mock Interviewer** |
+| **Project Category** | **Project Based** |
+| **Primary Course Outcome** | **CO5** (Attention Architectures & Advanced Language Models) |
+| **Supporting Course Outcomes** | **CO1** (Optimization & Regularization) and **CO3** (Sequential NLP) |
+| **GitHub Repository** | [https://github.com/jeevaa006/InterviewMate](https://github.com/jeevaa006/InterviewMate) |
+| **Individual Video Explanation** | `PENDING — Add the final shareable video URL` *(See instructions below)* |
+
+### 📚 Quick Documentation Links for Faculty Evaluation
+- 🎯 **[Course Outcome (CO) Mapping Document](docs/CO_MAPPING.md)** — Comprehensive CO1–CO5 alignment analysis, justifications, and codebase evidence.
+- 📹 **[Video Walkthrough & Presentation Script](docs/VIDEO_EXPLANATION.md)** — Individual presentation timestamps, detailed script, and video link submission instructions.
+- 📘 **[Comprehensive Academic Project Report](docs/PROJECT_REPORT.md)** — Complete project report including theoretical background, architecture, experimental framework, and references.
+
+> [!IMPORTANT]
+> **Video Submission Link Placeholder:**  
+> The video walkthrough link is currently:  
+> `PENDING — Add the final shareable video URL`  
+> To complete video submission: record the 5–7 minute walkthrough following [docs/VIDEO_EXPLANATION.md](docs/VIDEO_EXPLANATION.md), upload as an *Unlisted YouTube Video* or *Shareable Google Drive Link*, and update this field and [docs/VIDEO_EXPLANATION.md](docs/VIDEO_EXPLANATION.md).
 
 ---
 
 ## 📑 Table of Contents
+
 1. [Project Overview](#-project-overview)
-2. [System Architecture](#-system-architecture)
-3. [Pretrained Model Selection & Rationale](#-pretrained-model-selection--rationale)
-4. [Dataset Creation & Validation](#-dataset-creation--validation)
-5. [Fine-Tuning Methodology (LoRA / QLoRA)](#-fine-tuning-methodology-lora--qlora)
-6. [Interactive Mock Interview Application](#-interactive-mock-interview-application)
-7. [Step-by-Step Google Colab Cloud Deployment Guide](#-step-by-step-google-colab-cloud-deployment-guide)
-8. [College Presentation & Viva Q&A Guide](#-college-presentation--viva-qa-guide)
-9. [Project File Structure](#-project-file-structure)
-10. [Local Development & Testing](#-local-development--testing)
-11. [License & Ethical Notice](#-license--ethical-notice)
+2. [Technology Stack](#-technology-stack)
+3. [System Architecture & Workflow](#-system-architecture--workflow)
+4. [Course Outcome (CO) Mapping (Course 24ADI006)](#-course-outcome-co-mapping-course-24adi006)
+5. [Pretrained Model Selection & Rationale](#-pretrained-model-selection--rationale)
+6. [Dataset Creation & Zero Data Leakage](#-dataset-creation--zero-data-leakage)
+7. [Fine-Tuning Methodology (LoRA & QLoRA)](#-fine-tuning-methodology-lora--qlora)
+8. [Defensive Parsing & Rubric Engine](#-defensive-parsing--rubric-engine)
+9. [Interactive Web Application Features](#-interactive-web-application-features)
+10. [Step-by-Step Google Colab Deployment Guide](#-step-by-step-google-colab-deployment-guide)
+11. [Local Development & Automated Testing](#-local-development--automated-testing)
+12. [Repository Directory Structure](#-repository-directory-structure)
+13. [Limitations, Attribution & References](#-limitations-attribution--references)
+14. [College Presentation & Viva Q&A Guide](#-college-presentation--viva-qa-guide)
 
 ---
 
 ## 🌟 Project Overview
 
-**InterviewMate** solves a critical problem for students and aspiring engineers: the lack of accessible, personalized, and domain-specialized mock interview coaching. 
+### Problem Statement
+Technical and behavioural interview coaching is vital for students transitioning into engineering careers. However, traditional interview practice suffers from critical bottlenecks:
+- **High Financial Cost:** Professional mock interview platforms charge steep fees per session.
+- **Dependency on Closed APIs:** Existing automated interview bots rely heavily on proprietary cloud APIs (e.g., OpenAI GPT-4, Anthropic Claude), introducing recurring token expenses, network latency, and privacy vulnerabilities.
+- **Formatting & Scoring Inconsistency:** Off-the-shelf small language models without specialized fine-tuning suffer from prompt drift, hallucinated scoring, and syntax breakage when asked to produce structured feedback.
 
-Instead of relying on costly proprietary APIs (such as OpenAI or Anthropic) or attempting the impossible task of training a foundation model from scratch, InterviewMate takes a modern engineering approach:
-- We select an open-weight foundation model (**Qwen2.5-1.5B-Instruct**).
-- We construct an original, expert-rubric synthetic dataset covering **Software Engineering**, **AI & Data Science**, and **HR & Behavioural (STAR method)** interviews.
-- We fine-tune the model using **QLoRA (4-bit NormalFloat Quantization + Low-Rank Adaptation)** on free cloud GPUs (**Google Colab Tesla T4**).
-- We serve the application via **Gradio** in the cloud, generating a temporary public URL for live demonstrations without requiring any expensive local GPU.
+### Proposed Solution: InterviewMate
+InterviewMate implements a self-contained, open-weight AI mock interviewer engineered for educational and practical preparation:
+- **Open-Weight Transformer:** Employs [`Qwen/Qwen2.5-1.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) (Apache 2.0 license), requiring zero proprietary API keys.
+- **4-Bit QLoRA Fine-Tuning:** Efficiently adapts low-rank attention and MLP projection matrices on a free Google Colab Tesla T4 GPU in ~15 minutes.
+- **Multi-Pillar Rubric Scoring:** Calibrates evaluations against four distinct criteria: Relevance, Technical Depth, Clarity & Structure, and Completeness.
+- **Defensive Engineering:** Protects against LLM output format irregularities via a 4-tier JSON extraction and repair parser, ensuring the application never crashes during live use.
+- **Target Users & Benefits:** Tailored for undergraduate engineering students, job seekers, and faculty evaluators seeking repeatable, objective technical interview practice.
 
 ---
 
-## 📐 System Architecture
+## 💻 Technology Stack
+
+| Layer | Component / Technology | Specification & Purpose |
+| :--- | :--- | :--- |
+| **Language & Runtime** | Python 3.10+ / Linux | Primary programming language and execution environment |
+| **Base Language Model** | `Qwen/Qwen2.5-1.5B-Instruct` | 1.54B parameter decoder-only Transformer with Apache 2.0 License |
+| **Attention Mechanism** | Multi-Head Self-Attention + GQA | Scaled dot-product attention with Grouped-Query Attention & RoPE |
+| **Model Quantization** | `bitsandbytes` (NF4) | 4-bit NormalFloat Quantization + Double Quantization (~1.2 GB base VRAM) |
+| **PEFT Adapter** | Hugging Face `peft` | Low-Rank Adaptation (LoRA: $r=16, \alpha=32$) targeting all linear projections |
+| **Optimization & Training** | Hugging Face `trl` (`SFTTrainer`) | Paged AdamW 8-bit optimizer, Cosine Annealing learning rate scheduler |
+| **Cloud Environment** | Google Colab (Tesla T4 GPU) | Free-tier cloud accelerator with 15 GB GDDR6 VRAM |
+| **Interactive Interface** | Gradio Blocks 4.x | Web-based reactive user interface with temporary public cloud URL sharing |
+| **Data Serialization** | JSONLines (`.jsonl`) / Pydantic | Structured record schema and evaluation datasets |
+| **Testing & Verification** | Python `unittest` | 12 automated unit and integration tests covering dataset, fallbacks, and engine |
+
+---
+
+## 📐 System Architecture & Workflow
+
+InterviewMate executes through a clean linear workflow connecting the user interface to the quantized language model and defensive rubric parser:
+
+$$\text{User} \longrightarrow \text{Gradio Interface} \longrightarrow \text{Interview Engine} \longrightarrow \text{Model Loader (4-bit + LoRA)} \longrightarrow \text{Feedback & Rubric Parser} \longrightarrow \text{Results Display}$$
 
 ```mermaid
 flowchart TD
-    subgraph DataPipeline["1. Data Pipeline"]
-        GenScript["scripts/generate_dataset.py"] -->|"Domain Rules & Rubrics"| SynthGen["Synthetic Generator"]
-        SynthGen -->|"Validate Schema & Bounds"| ValCheck["Validation Engine"]
-        ValCheck -->|"Group-Based Split (No Leakage)"| TrainSet[("data/interview_train.jsonl<br/>(123 records)")]
-        ValCheck -->|"Held-Out Scenarios"| EvalSet[("data/interview_eval.jsonl<br/>(33 records)")]
+    subgraph ClientLayer["1. User & Client Presentation"]
+        Candidate["Candidate User"] -->|"Selects Role & Track"| SetupUI["app.py: Setup Screen"]
+        SetupUI -->|"Starts Session"| ActiveUI["app.py: Interview Card"]
+        Candidate -->|"Submits Answer"| ActiveUI
     end
 
-    subgraph ColabCloud["2. Google Colab Cloud Environment (Tesla T4 GPU)"]
-        BaseModel["Base Model<br/>Qwen2.5-1.5B-Instruct<br/>(Apache 2.0)"]
-        NF4Config["BitsAndBytesConfig<br/>4-bit NF4 Quantization<br/>(~1.2 GB VRAM)"]
-        LoRAConfig["PEFT LoraConfig<br/>r=16, alpha=32<br/>Target: q, k, v, o, gate, up, down"]
-        
-        BaseModel --> NF4Config --> LoRAConfig
-        TrainSet --> SFT["TRL SFTTrainer<br/>(3 Epochs, Cosine LR, Seed 42)"]
-        LoRAConfig --> SFT
-        SFT --> SavedAdapter[("Saved LoRA Adapter<br/>adapter_model.safetensors<br/>(saved_adapter/ & GDrive)")]
-        
-        EvalSet --> Benchmarking["src/evaluation.py<br/>Base vs LoRA Comparison"]
-        SavedAdapter --> Benchmarking
+    subgraph LogicLayer["2. Session Coordination & Prompting"]
+        ActiveUI -->|"Coordinates Turn"| Engine["src/interview_engine.py<br/>(InterviewSession)"]
+        Engine -->|"Retrieves Scenario"| QuestionBank[("Question Pool<br/>SWE / AI / HR")]
+        Engine -->|"Constructs ChatML"| PromptBuilder["src/feedback.py<br/>build_evaluation_prompt()"]
     end
 
-    subgraph Serving["3. Interactive Cloud Serving"]
-        App["app.py<br/>(Gradio Blocks Interface)"]
-        SavedAdapter --> App
-        BaseModel --> App
-        App -->|"share=True"| PublicLink["Temporary Live URL<br/>(https://xxxx.gradio.live)"]
+    subgraph DeepLearningLayer["3. Quantized Model Inference"]
+        PromptBuilder -->|"Tokenized Input"| ModelLoader["src/model_loader.py<br/>(load_model_and_tokenizer)"]
+        BaseWeights["Qwen2.5-1.5B Base<br/>(4-bit NF4 via BitsAndBytes)"] --> ModelLoader
+        LoRAWeights["LoRA Adapter<br/>(r=16, alpha=32)"] --> ModelLoader
+        ModelLoader -->|"Autoregressive Sampling"| Generator["generate_model_response()"]
+        Generator -->|"Raw Response Text"| RawOutput["Raw LLM String"]
     end
 
-    subgraph Client["4. Client Laptop (Linux Mint)"]
-        Browser["Web Browser<br/>(Access Demo Link)"]
-        PublicLink --> Browser
-        Browser -->|"Audio/Text Answers"| PublicLink
+    subgraph DefensiveLayer["4. Defensive Parsing & Sanitization"]
+        RawOutput --> Parser["src/feedback.py<br/>extract_json_from_text()"]
+        Parser -->|"Regex / Repair / Fallback"| Sanitizer["sanitize_feedback()"]
+        Sanitizer -->|"Structured Rubric Dict"| Engine
+    end
+
+    subgraph OutputLayer["5. Results & Coaching Feedback"]
+        Engine -->|"Renders Card"| ScoreDisplay["Rubric Scores (/10)<br/>Strengths & Weaknesses<br/>Actionable Coaching<br/>Improved Model Answer"]
+        Engine -->|"Dynamic Probing"| FollowUp["Contextual Follow-up Question"]
+        Engine -->|"On Session End"| FinalReport["Final Hiring Readiness Audit<br/>7-Day Preparation Plan<br/>Downloadable Markdown"]
     end
 ```
+
+---
+
+## 🎯 Course Outcome (CO) Mapping (Course 24ADI006)
+
+This project has been aligned with the official course outcomes for **24ADI006 – Deep Learning**:
+
+| Course Outcome | Syllabus Definition | Project Alignment | Technical Justification & Repository Evidence |
+| :--- | :--- | :--- | :--- |
+| **CO1** | *Apply neural network architectures, activation functions, optimization methods, and regularization techniques to develop and evaluate deep learning models for predictive tasks.* | **Supporting Mapping** | Implements **Paged AdamW 8-bit** optimizer, **Cosine Annealing** learning rate scheduling with warmup, LoRA dropout regularization ($p=0.05$), cross-entropy causal language modeling loss, and rubric predictive **Mean Absolute Error (MAE)** evaluation on held-out samples. Verified in [`colab/InterviewMate_Training_and_Demo.ipynb`](colab/InterviewMate_Training_and_Demo.ipynb#L18) and [`src/evaluation.py`](src/evaluation.py#L9-L12). |
+| **CO2** | *Implement deep learning techniques for feature extraction, image analysis, and computer vision applications.* | **Not Directly Mapped** | InterviewMate focuses strictly on Natural Language Processing (NLP) dialogs and interview transcripts. It does not utilize convolutional networks, vision transformers, or image feature extraction pipelines. |
+| **CO3** | *Develop sequential learning models for processing and analyzing sequential and natural language data.* | **Supporting Mapping** | Implements sequential tokenization, Rotary Position Embeddings (RoPE), and causal autoregressive language generation. Demonstrates the modern evolution of sequential modeling from recurrent neural networks (RNNs/LSTMs) to causal self-attention decoders. Verified in [`src/feedback.py`](src/feedback.py#L29-L81) and [`src/model_loader.py`](src/model_loader.py#L95-L112). |
+| **CO4** | *Analyze generative and unsupervised deep learning techniques for representation learning, feature extraction, and synthetic data generation.* | **Contextual / Related Connection** | Generates novel candidate feedback and follow-up inquiries autoregressively, and implements a rule-based synthetic dataset generator. However, generating text using an instruction-tuned decoder **does not** constitute implementation of Variational Autoencoders (VAEs), Generative Adversarial Networks (GANs), or diffusion models. |
+| **CO5** | *Analyze attention-based architectures and advanced deep learning techniques to develop intelligent applications for language and multimodal AI tasks.* | **Primary Mapping** | Implements and fine-tunes a modern Transformer decoder (`Qwen2.5-1.5B-Instruct`) utilizing **Scaled Dot-Product Multi-Head Attention**, **Grouped-Query Attention (GQA)**, and **Rotary Position Embeddings (RoPE)**. Applies advanced parameter-efficient deep learning (**4-bit QLoRA**) and deploys a real-time language application. Verified in [`src/model_loader.py`](src/model_loader.py#L62-L131) and [`app.py`](app.py#L50-L60). |
+
+> [!NOTE]
+> **Academic Integrity & Faculty Assessment Notice:**  
+> The mappings above reflect self-contained, project-level technical alignments with course concepts, not an official faculty-approved grade or certification. For detailed mathematical formulations and syllabus topic dissections, consult [docs/CO_MAPPING.md](docs/CO_MAPPING.md).
 
 ---
 
 ## 🧠 Pretrained Model Selection & Rationale
 
-We evaluated candidate open-weight language models for this capstone project:
+We evaluated candidate open-weight language models for this project:
 
-| Candidate Model | Parameters | License | FP16 VRAM | 4-bit QLoRA VRAM | Colab T4 Compatible? | Evaluation Verdict |
+| Candidate Model | Parameters | License | FP16 VRAM | 4-bit QLoRA VRAM | Colab T4 Feasibility | Project Verdict |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Qwen/Qwen2.5-1.5B-Instruct** | **1.54B** | **Apache 2.0** | **~3.2 GB** | **~1.2 GB** | **Yes (Flawless)** | **SELECTED (Optimal Balance)** |
-| `Qwen/Qwen3-1.7B` | 1.7B | Apache 2.0 | ~3.6 GB | ~1.5 GB | Yes | High performance, alternative drop-in |
-| `Qwen/Qwen2.5-0.5B-Instruct` | 0.49B | Apache 2.0 | ~1.1 GB | ~0.6 GB | Yes (Ultra-light) | Fallback for constrained setups |
-| `Meta-Llama-3.1-8B-Instruct` | 8.03B | Llama 3.1 Community | ~16.5 GB | ~6.5 GB | Tight (OOM risk) | High VRAM; restricted license gating |
+| **`Qwen/Qwen2.5-1.5B-Instruct`** | **1.54B** | **Apache 2.0** | **~3.2 GB** | **~1.2 GB** | **Yes (Flawless)** | **SELECTED (Optimal Balance)** |
+| `Qwen/Qwen2.5-0.5B-Instruct` | 0.49B | Apache 2.0 | ~1.1 GB | ~0.6 GB | Yes (Ultra-light) | Fallback candidate |
+| `Qwen/Qwen3-1.7B` | 1.7B | Apache 2.0 | ~3.6 GB | ~1.5 GB | Yes | High performance alternate |
+| `Meta-Llama-3.1-8B-Instruct` | 8.03B | Llama Community | ~16.5 GB | ~6.5 GB | High OOM Risk | VRAM-heavy; gated access |
 
 ### Why `Qwen/Qwen2.5-1.5B-Instruct` was selected:
-1. **Permissive Apache 2.0 License:** Completely open-source for academic and commercial use, with zero gating forms or restricted approvals.
-2. **Exceptional Structured JSON Compliance:** Qwen2.5 models are specifically pre-trained and instruction-tuned on structured output, code, and reasoning tasks, making them resilient at producing valid JSON without syntax breakage.
-3. **Hardware Economics on Free Colab:** The base weights occupy only **1.2 GB in 4-bit precision**. When training with LoRA adapters ($r=16$) and gradient checkpointing, total VRAM consumption peaks at only **~4.5 to 6 GB**, leaving abundant headroom on Google Colab's 15 GB Tesla T4 GPU.
-4. **Context Window:** Native support for long context (up to 32,768 tokens) ensures complete conversation history and follow-up chains fit without truncation.
+1. **Permissive Apache 2.0 Licensing:** Unrestricted open-source usage with zero commercial gating or proprietary API keys.
+2. **Superior JSON & Reasoning Compliance:** Instruction-tuned specifically on synthetic data, code, and structured reasoning.
+3. **Hardware Economics on Free Colab:** The base weights occupy only **~1.2 GB in 4-bit precision**. When training with LoRA adapters ($r=16$), peak memory usage remains under **~6 GB**, well below Google Colab's 15 GB ceiling.
+4. **Context Length:** Supports up to 32,768 tokens via RoPE, ensuring long multi-turn interview histories fit comfortably.
 
 ---
 
-## 📊 Dataset Creation & Validation
+## 📊 Dataset Creation & Zero Data Leakage
 
-To respect the constraint of zero paid APIs and zero pre-existing data, we constructed an original, rule-based synthetic dataset generator in [scripts/generate_dataset.py](file:///home/jeevaa/projects/interviewmate/scripts/generate_dataset.py).
+To ensure academic rigor with zero paid API usage, we developed an original synthetic dataset generator in [`scripts/generate_dataset.py`](scripts/generate_dataset.py).
 
-### 1. Dataset Taxonomy (156 Records Total)
-- **Domain Categories:**
-  - 💻 **Software Development (60 records):** Databases & indexing, concurrency & race conditions, REST vs GraphQL, CAP theorem, CI/CD, Redis caching, Docker vs VMs, system design, OWASP security, Web Vitals, ACID isolation.
-  - 🤖 **AI & Data Science (57 records):** Overfitting & regularization, self-attention mathematics, evaluation metrics under class imbalance, LoRA & QLoRA mechanics, bias-variance tradeoff, RAG vs fine-tuning, embeddings & vector search, gradient vanishing, drift detection.
-  - 🤝 **HR & Behavioural (39 records):** STAR method (Situation, Task, Action, Result) responses covering technical disagreements, ownership of mistakes, competing deadlines, leading without authority, ethical dilemmas, and receiving critical feedback.
+### 1. Dataset Breakdown (156 Total Records)
+- 💻 **Software Development (60 records / 20 scenarios):** B+ tree indexing, concurrency & race conditions, REST vs GraphQL, CAP theorem, CI/CD pipelines, Redis caching, Docker vs VMs, system design, Core Web Vitals, ACID isolation.
+- 🤖 **AI & Data Science (57 records / 19 scenarios):** Overfitting & regularization, self-attention mechanics, evaluation under class imbalance, LoRA & QLoRA mechanics, bias-variance tradeoff, RAG vs fine-tuning, vector embeddings, gradient vanishing, data drift.
+- 🤝 **HR & Behavioural (39 records / 13 scenarios):** STAR method (Situation, Task, Action, Result) responses covering technical disagreements, failure ownership, competing deadlines, leading without authority, and ethical dilemmas.
 
 ### 2. Tri-Tier Answer Profiles
-Every interview scenario includes three distinct answer qualities:
-1. **Weak Answer:** Contains factual misconceptions, vague buzzwords, or defensive/unstructured communication.
-2. **Average Answer:** Factually correct on fundamentals, but misses production trade-offs, quantitative metrics, or deeper failure modes.
-3. **Strong Answer:** Masterful explanation highlighting algorithmic complexity, architectural trade-offs, edge-case mitigation, or articulate STAR narratives.
+Every scenario includes three distinct answer variants:
+- **Weak:** Contains factual misconceptions, vague buzzwords, or missing structure.
+- **Average:** Factually correct on fundamentals, but misses production trade-offs or quantitative depth.
+- **Strong:** Exemplary response analyzing algorithmic complexity, edge cases, and architectural trade-offs.
 
-### 3. Record Schema
-Each record is validated against strict constraints:
-```json
-{
-  "id": "SWE_IDX_WEAK",
-  "category": "software_development",
-  "role": "Backend Engineer",
-  "experience_level": "Mid-Level",
-  "instruction": "Evaluate the candidate's interview answer according to the rubric...",
-  "interview_question": "How do database indexes improve query performance...",
-  "candidate_answer": "Indexes make queries fast because they sort data in a table...",
-  "answer_quality": "weak",
-  "scoring_rubric": {
-    "relevance": 6,
-    "accuracy_depth": 3,
-    "clarity_structure": 5,
-    "completeness": 3
-  },
-  "overall_score": 4,
-  "strengths": ["Recognizes that indexes exist to speed up search queries."],
-  "weaknesses": ["Suggesting an index on every column is a critical anti-pattern..."],
-  "actionable_feedback": ["Explain B+ Tree lookups (O(log N) vs O(N))..."],
-  "improved_sample_answer": "Database indexes improve query performance by constructing auxiliary B+ Trees...",
-  "follow_up_question": "What is the difference between a clustered and non-clustered index?"
-}
-```
-
-### 4. Zero Data Leakage Guarantee
-We split scenarios using **group-based partitioning** (80% train / 20% eval). All weak, average, and strong variants of a given scenario remain strictly grouped together:
-- **`data/interview_train.jsonl`:** 123 records across 41 scenarios.
-- **`data/interview_eval.jsonl`:** 33 records across 11 scenarios (100% held-out).
-
-> [!NOTE]
-> **Ethical Notice on Synthetic Data:**  
-> This dataset was generated synthetically using domain heuristics and expert rubrics for educational purposes. Synthetic data may reflect prompt biases or simplifications and requires human validation before clinical, legal, or high-stakes employment decisions.
+### 3. Scenario-Level Partitioning (Zero Data Leakage)
+To prevent data contamination, we partition data by **question scenario prefix**, ensuring all weak, average, and strong variants of a scenario remain strictly together:
+- **Training Set ([`data/interview_train.jsonl`](data/interview_train.jsonl)):** 123 records (41 scenarios, ~80%).
+- **Evaluation Set ([`data/interview_eval.jsonl`](data/interview_eval.jsonl)):** 33 records (11 scenarios, ~20%).
+- Verified by automated unit test `test_zero_data_leakage` in [`tests/test_interviewmate.py`](tests/test_interviewmate.py).
 
 ---
 
-## ⚡ Fine-Tuning Methodology (LoRA / QLoRA)
+## ⚡ Fine-Tuning Methodology (LoRA & QLoRA)
 
-### Full Fine-Tuning vs. LoRA vs. QLoRA
-
-| Method | Base Model Weights | Trainable Parameters | Optimizer Memory (AdamW) | Colab T4 Feasibility |
-| :--- | :--- | :--- | :--- | :--- |
-| **Full Fine-Tuning** | FP16 (3.2 GB) | 100% (1.54B params) | ~12.3 GB (FP32 states) | ❌ Out of Memory (OOM) |
-| **LoRA** | FP16 (3.2 GB) | ~0.8% (~12M params) | ~0.1 GB | ⚠️ Feasible but higher VRAM |
-| **QLoRA (Ours)** | **NF4 (1.2 GB)** | **~0.8% (~12M params)** | **~0.1 GB (Paged 8-bit)** | **✅ Ideal (~4.5 GB Peak VRAM)** |
-
-### Mathematical Principles of LoRA & QLoRA
-1. **Low-Rank Decomposition:** Weight updates $\Delta W$ for a weight matrix $W_0 \in \mathbb{R}^{d \times k}$ are decomposed into two low-rank matrices:
+### Mathematical Foundations
+1. **Low-Rank Adaptation (LoRA):** Parameter updates $\Delta W$ for base weight matrix $W_0 \in \mathbb{R}^{d \times k}$ are constrained to a low-rank decomposition:
    $$\Delta W = \frac{\alpha}{r} (B \cdot A)$$
-   where $B \in \mathbb{R}^{d \times r}$ is initialized to zeros, $A \in \mathbb{R}^{r \times k}$ is initialized with Gaussian noise, and rank $r \ll \min(d, k)$ (we use $r=16, \alpha=32$).
-2. **NormalFloat4 (NF4) Quantization:** An information-theoretically optimal non-linear quantization data type designed for normally distributed neural network weights.
-3. **Double Quantization (DQ):** Quantizes the quantization constants themselves, reducing memory footprint by an additional 0.37 bits per parameter.
-4. **Paged Optimizers:** Uses CUDA unified memory to dynamically page memory between GPU VRAM and CPU RAM during gradient checkpointing spikes, eliminating unexpected OOM crashes.
+   where $B \in \mathbb{R}^{d \times r}$ is initialized to zero, $A \in \mathbb{R}^{r \times k}$ is initialized with Gaussian noise, and rank $r=16, \alpha=32$.
+2. **NormalFloat4 (NF4) Quantization:** Quantizes weights to an information-theoretically optimal distribution for normally distributed neural network tensors.
+3. **Double Quantization (DQ):** Quantizes the first-stage quantization constants, saving ~0.37 bits per parameter.
+4. **Paged AdamW 8-bit:** Automatically pages memory pages to host RAM during backward-pass allocation spikes.
+
+### Memory Comparison on Colab T4 GPU
+| Method | Base Model Weights | Trainable Parameters | Optimizer Memory | Colab T4 Feasibility |
+| :--- | :--- | :--- | :--- | :--- |
+| **Full Fine-Tuning** | FP16 (~3.2 GB) | 100% (1.54B params) | ~12.3 GB (FP32 states) | ❌ Out of Memory (OOM) |
+| **Standard LoRA** | FP16 (~3.2 GB) | ~0.8% (~12M params) | ~0.1 GB | ⚠️ Tight VRAM headroom |
+| **QLoRA (Ours)** | **NF4 (~1.2 GB)** | **~0.8% (~12M params)** | **~0.1 GB (Paged 8-bit)** | **✅ Ideal (~4.8 to 5.6 GB Peak)** |
 
 ---
 
-## 💻 Interactive Mock Interview Application
+## 🛡️ Defensive Parsing & Rubric Engine
 
-The web interface is built with **Gradio Blocks** in [app.py](file:///home/jeevaa/projects/interviewmate/app.py) and features:
+Small language models occasionally produce markdown code blocks or conversational commentary alongside JSON. [`src/feedback.py`](src/feedback.py) implements a **4-tier defensive pipeline**:
+1. **Direct JSON Parsing:** Attempts `json.loads(text.strip())`.
+2. **Markdown Regex Extraction:** Extracts content encased within ```` ```(?:json)? ... ``` ````.
+3. **Brace Substring & Comma Repair:** Slices outermost `{ ... }` and strips invalid trailing commas (`,\s*([\]}]) \to \1`).
+4. **Deterministic Heuristic Fallback:** If the output is completely malformed, extracts numbers via regex, clamps scores to $[1, 10]$, and constructs a safe feedback dictionary. **The web app never crashes or hangs.**
 
-1. **Custom Session Configuration:** Select Target Role, Experience Level (Junior, Mid, Senior), Interview Mode (Software Dev, AI, Behavioural), and Question Count.
-2. **One Question at a Time:** Clean, distraction-free interface presenting one question per step.
-3. **Real-time 4-Pillar Rubric Scoring:**
+---
+
+## 💻 Interactive Web Application Features
+
+The Gradio Blocks interface in [`app.py`](app.py) provides:
+1. **Interview Customization:** Choose role (Backend, Frontend, Fullstack, AI/Data Science, DevOps), seniority (Junior, Mid, Senior), track, and question count.
+2. **Question-by-Question Progression:** Distraction-free, focused single-question display.
+3. **4-Pillar Score Cards:**
    - **Relevance (/10)**
    - **Technical Depth & Correctness (/10)**
    - **Clarity & Structure (/10)**
    - **Completeness (/10)**
-4. **Actionable Coaching:** Immediate breakdown of strengths, weaknesses, coaching advice, and an exemplary improved sample answer.
-5. **Contextual Follow-Up Engine:** The model generates targeted follow-up inquiries that dig into the candidate's specific answer.
-6. **Comprehensive Final Performance Audit:** A consolidated report with average scores, hiring readiness tier, and a personalized **7-day preparation roadmap**.
-7. **Downloadable Markdown Report:** Candidate can export the entire interview transcript and feedback log.
+4. **Actionable Coaching:** Bulleted strengths, weaknesses, and a refined model answer.
+5. **Contextual Follow-up Engine:** Probing questions tailored directly to the candidate's specific previous answer.
+6. **Hiring Readiness Audit:** Comprehensive final report with readiness classification and a **7-day preparation roadmap**.
+7. **Downloadable Markdown Report:** Complete interview transcript and rubric breakdown export.
 
 ---
 
-## 🚀 Step-by-Step Google Colab Cloud Deployment Guide
+## 🚀 Step-by-Step Google Colab Deployment Guide
 
-Follow these steps to run the fine-tuning and launch the live web demo:
+Follow these steps to fine-tune the model and launch the live web application on Google Colab:
 
 ### Step 1: Open Google Colab
-1. Open your web browser on Linux Mint and navigate to [https://colab.research.google.com](https://colab.research.google.com).
-2. Click **Upload** and upload [InterviewMate_Training_and_Demo.ipynb](file:///home/jeevaa/projects/interviewmate/colab/InterviewMate_Training_and_Demo.ipynb).
+1. Navigate to [https://colab.research.google.com](https://colab.research.google.com).
+2. Click **Upload** and upload [`colab/InterviewMate_Training_and_Demo.ipynb`](colab/InterviewMate_Training_and_Demo.ipynb).
 
 ### Step 2: Enable Free GPU Acceleration
-1. In the top menu, go to **Runtime** > **Change runtime type**.
+1. In the top menu, navigate to **Runtime** > **Change runtime type**.
 2. Under **Hardware accelerator**, select **T4 GPU**.
 3. Click **Save**.
 
-### Step 3: Run the Cells
-1. **Cell 1 & 2 (Hardware Check):** Verifies that `nvidia-smi` detects the Tesla T4 GPU with ~15GB of GDDR6 VRAM.
-2. **Cell 3 (Dependencies):** Automatically installs `transformers`, `peft`, `accelerate`, `bitsandbytes`, `trl`, and `gradio`.
-3. **Cell 4 (Mount Google Drive):** *(Optional)* Connect your Google Drive so the trained LoRA adapter is permanently backed up.
-4. **Cell 5 & 6 (Dataset & Formatting):** Loads and verifies the 156 records and applies the ChatML template.
-5. **Cell 7 & 8 (Model Loading & QLoRA Fine-Tuning):**
-   - Quantizes `Qwen2.5-1.5B-Instruct` to 4-bit NF4.
-   - Attaches LoRA adapters to attention and MLP layers.
-   - Trains for 3 epochs with `SFTTrainer`. Training typically completes in **~12 to 18 minutes** on free Colab!
-6. **Cell 9 (Save Adapter):** Exports `adapter_model.safetensors` and `adapter_config.json` into `./saved_adapter`.
-7. **Cell 10 (Evaluation Benchmark):** Benchmarks the base model against the fine-tuned adapter on held-out samples.
-8. **Cell 11 (Launch Gradio):** Executes `app.py --share`.
+### Step 3: Run the Pipeline Cells
+1. **Cells 1–2 (Hardware Check):** Verifies `nvidia-smi` detects the Tesla T4 GPU with ~15GB GDDR6 VRAM.
+2. **Cell 3 (Install Dependencies):** Installs `transformers`, `peft`, `accelerate`, `bitsandbytes`, `trl`, and `gradio`.
+3. **Cell 4 (Mount Google Drive):** *(Optional)* Persists the fine-tuned adapter weights to Google Drive.
+4. **Cells 5–6 (Dataset Loading & ChatML Formatting):** Loads the 156 records and applies the conversation template.
+5. **Cells 7–8 (QLoRA Setup & SFT Training):** Quantizes base model to 4-bit NF4, initializes LoRA adapters, and trains for 3 epochs using `SFTTrainer` (~12–18 minutes).
+6. **Cell 9 (Save Adapter):** Exports `adapter_model.safetensors` to `./saved_adapter`.
+7. **Cell 10 (Evaluation Benchmark):** Benchmarks rubric performance on held-out samples.
+8. **Cell 11 (Launch Gradio):** Starts `app.py --share`.
 
-### Step 4: Open Your Demonstration Link
-In the output of Cell 11, Gradio prints:
+### Step 4: Access the Live Web Demo
+In the output of Cell 11, Gradio provides a temporary public link:
 ```text
 Running on local URL: http://127.0.0.1:7860
-Running on public URL: https://3b9a1c2d.gradio.live
+Running on public URL: https://xxxxxxxx.gradio.live
 ```
-Click the **public URL (`.gradio.live`)** to open the live web application on your Linux Mint laptop or share it with your college evaluation panel!
-
-> [!IMPORTANT]
-> **Colab Session Lifespan:**  
-> The temporary `.gradio.live` link remains active as long as the Google Colab session is running. If your Colab tab is closed or idle for over 60–90 minutes, Colab disconnects and the public link expires. To restart, simply rerun Cell 11!
+Open the public URL in your browser to test the interactive mock interviewer live!
 
 ---
 
-## 🎤 College Presentation & Viva Q&A Guide
+## 🧪 Local Development & Automated Testing
 
-Be prepared to answer these common questions from your professor or external examiner:
+You can run the entire test suite locally without requiring a GPU or large model downloads. The built-in `MockModel` automatically activates when PyTorch or CUDA is absent.
 
-#### Q1: "Why did you fine-tune a model instead of using prompt engineering on the base model?"
-> **Answer:** "Prompt engineering alone on small 1.5B models frequently results in formatting drift, inconsistent JSON structures, and hallucinated scores. Fine-tuning with LoRA adapts the model's internal representation to consistently adhere to our 4-pillar scoring rubric, calibrate score distributions, and reliably output structured JSON with zero extra prompt overhead."
+```bash
+# 1. Activate virtual environment (if using venv)
+source venv/bin/activate
 
-#### Q2: "What is the difference between LoRA and QLoRA?"
-> **Answer:** "LoRA freezes the base model weights and trains low-rank decomposition matrices ($B \cdot A$). However, the base weights are still kept in 16-bit floating point (~3.2 GB). QLoRA quantizes the frozen base weights down to 4-bit NormalFloat (NF4), reducing base model memory to ~1.2 GB, and introduces Double Quantization and Paged Optimizers. This allows us to fine-tune on free consumer GPUs like the Colab T4."
+# 2. Run the automated test suite
+python3 -m unittest discover -s tests -v
+```
 
-#### Q3: "What prevents the model from leaking answers between training and testing?"
-> **Answer:** "We used scenario-level group partitioning. In [scripts/generate_dataset.py](file:///home/jeevaa/projects/interviewmate/scripts/generate_dataset.py), all three quality variations (weak, average, strong) of a question scenario are strictly kept together. The evaluation set consists of 33 records from 11 scenarios that the model never encountered during training."
+**Expected Test Output:**
+```text
+test_dataset_files_exist (test_interviewmate.TestDatasetIntegrity.test_dataset_files_exist) ... ok
+test_schema_and_counts (test_interviewmate.TestDatasetIntegrity.test_schema_and_counts) ... ok
+test_zero_data_leakage (test_interviewmate.TestDatasetIntegrity.test_zero_data_leakage) ... ok
+test_evaluation_benchmark (test_interviewmate.TestEvaluationEngine.test_evaluation_benchmark) ... ok
+test_broken_output_fallback_never_crashes (test_interviewmate.TestFeedbackAndJSONParser.test_broken_output_fallback_never_crashes) ... ok
+test_clean_json_parsing (test_interviewmate.TestFeedbackAndJSONParser.test_clean_json_parsing) ... ok
+test_markdown_code_fence_parsing (test_interviewmate.TestFeedbackAndJSONParser.test_markdown_code_fence_parsing) ... ok
+test_score_boundary_clamping (test_interviewmate.TestFeedbackAndJSONParser.test_score_boundary_clamping) ... ok
+test_trailing_comma_repair (test_interviewmate.TestFeedbackAndJSONParser.test_trailing_comma_repair) ... ok
+test_session_lifecycle (test_interviewmate.TestInterviewEngine.test_session_lifecycle) ... ok
+test_hardware_status_dict (test_interviewmate.TestModelLoaderAndHardware.test_hardware_status_dict) ... ok
+test_model_loading_fallback (test_interviewmate.TestModelLoaderAndHardware.test_model_loading_fallback) ... ok
 
-#### Q4: "What happens if the model produces malformed output or invalid JSON?"
-> **Answer:** "We implemented defensive engineering in [src/feedback.py](file:///home/jeevaa/projects/interviewmate/src/feedback.py). The parser uses a multi-tier extraction pipeline: direct parsing, markdown code-fence regex extraction, and trailing-comma repair. If the output is completely malformed, a deterministic heuristic fallback scores the answer and populates the rubric, guaranteeing that the web application never crashes or hangs in production."
+----------------------------------------------------------------------
+Ran 12 tests in 0.061s
+
+OK
+```
+
+To test the Gradio user interface locally in mock development mode:
+```bash
+python3 app.py --port 7860
+```
+Then navigate to `http://localhost:7860` in your web browser.
 
 ---
 
-## 📂 Project File Structure
+## 📂 Repository Directory Structure
 
 ```text
 interviewmate/
 ├── app.py                                   # Gradio web application (Local & Cloud execution)
-├── requirements.txt                         # Pinned, tested cloud and local dependencies
-├── .gitignore                               # Git exclusions (checkpoints, venv, cache)
-├── README.md                                # Comprehensive capstone documentation & viva guide
+├── requirements.txt                         # Pinned, tested dependencies for Colab and local environments
+├── .gitignore                               # Git exclusions (checkpoints, weights, venv, temporary cache)
+├── README.md                                # Primary project overview, student metadata & viva guide
 ├── colab/
 │   └── InterviewMate_Training_and_Demo.ipynb # Complete end-to-end Google Colab notebook
 ├── data/
 │   ├── interview_train.jsonl                # 123 verified training records (41 scenarios)
-│   └── interview_eval.jsonl                 # 33 held-out evaluation records (11 scenarios)
+│   └── interview_eval.jsonl                 # 33 held-out evaluation records (11 scenarios, zero leakage)
+├── docs/
+│   ├── CO_MAPPING.md                        # Formal Course Outcome (CO1-CO5) alignment document
+│   ├── VIDEO_EXPLANATION.md                 # Presentation script, timeline (5-7 min) & video URL guide
+│   └── PROJECT_REPORT.md                    # Comprehensive academic capstone project report
 ├── scripts/
 │   ├── generate_dataset.py                  # Standalone synthetic dataset generator & validator
 │   └── build_colab_notebook.py              # Automated builder for the Colab notebook JSON
@@ -270,35 +342,35 @@ interviewmate/
 
 ---
 
-## 🧪 Local Development & Testing
+## ⚖️ Limitations, Attribution & References
 
-You can run the entire test suite locally on your Linux Mint laptop without needing a GPU:
+### Acknowledged Limitations
+1. **Synthetically Generated Dataset:** The 156 records were generated using domain heuristics and rubrics. While structurally sound and validated, human calibration with professional interview transcripts will enhance nuance.
+2. **Modality:** Currently evaluates written responses. Vocal tone, speech cadence, and visual presentation are not processed.
+3. **Adapter Weights in Version Control:** Large binary weights (`.safetensors`) are intentionally omitted from GitHub per standard git hygiene. Adapters are generated during Colab execution and persisted to Google Drive.
 
-```bash
-# 1. Activate your Python virtual environment
-source venv/bin/activate
-
-# 2. Run the test suite
-python tests/test_interviewmate.py
-```
-**Expected Output:**
-```text
-----------------------------------------------------------------------
-Ran 12 tests in 0.026s
-
-OK
-```
-
-To test the Gradio user interface locally in mock development mode:
-```bash
-python app.py --port 7860
-```
-Open `http://localhost:7860` in your web browser.
+### Attribution & References
+- **Base Model:** [`Qwen/Qwen2.5-1.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) licensed under the **Apache License 2.0**.
+- **Transformer Architecture:** Vaswani et al., *"Attention Is All You Need"*, NeurIPS 2017.
+- **LoRA:** Hu et al., *"LoRA: Low-Rank Adaptation of Large Language Models"*, 2021.
+- **QLoRA:** Dettmers et al., *"QLoRA: Efficient Finetuning of Quantized LLMs"*, NeurIPS 2023.
+- **Project Code License:** MIT License.
 
 ---
 
-## ⚖️ License & Ethical Notice
+## 🎤 College Presentation & Viva Q&A Guide
 
-- **Base Model License:** [Qwen 2.5](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) is released under the **Apache License 2.0**.
-- **Project Code:** Released under the **MIT License**.
-- **Usage Disclaimer:** InterviewMate is developed for educational and experimental preparation purposes. It does not replace human hiring committees or professional career counselling.
+#### Q1: "Why did you fine-tune an open-weight model instead of using prompt engineering on the base model?"
+> **Answer:** "Prompt engineering alone on small 1.5B models frequently results in formatting drift, markdown leakage, and hallucinated scores. Fine-tuning with LoRA adapts the model's internal representation to consistently adhere to our 4-pillar scoring rubric, calibrate score distributions, and reliably output structured JSON with zero extra prompt overhead."
+
+#### Q2: "What is the difference between LoRA and QLoRA?"
+> **Answer:** "LoRA freezes the base model weights and trains low-rank decomposition matrices ($B \cdot A$) while keeping base weights in 16-bit floating point (~3.2 GB). QLoRA quantizes the frozen base weights down to 4-bit NormalFloat (NF4), reducing base model memory to ~1.2 GB, and introduces Double Quantization and Paged Optimizers. This enables fine-tuning on consumer-tier cloud GPUs like the Colab T4."
+
+#### Q3: "What prevents the model from leaking answers between training and testing?"
+> **Answer:** "We implemented scenario-level group partitioning in `scripts/generate_dataset.py`. All three quality variations (weak, average, strong) of a question scenario are strictly kept together. The evaluation set consists of 33 records from 11 scenarios that the model never encountered during training, verified by automated unit tests."
+
+#### Q4: "What happens if the model produces malformed output or invalid JSON?"
+> **Answer:** "We implemented defensive engineering in `src/feedback.py`. The parser uses a multi-tier extraction pipeline: direct parsing, markdown code-fence regex extraction, and trailing-comma repair. If the output is completely malformed, a deterministic heuristic fallback scores the answer and populates the rubric, guaranteeing that the web application never crashes in production."
+
+#### Q5: "How does this project address Course Outcome 5 (CO5) of Deep Learning?"
+> **Answer:** "CO5 focuses on attention-based architectures and advanced deep learning techniques for intelligent language applications. InterviewMate directly implements a Transformer decoder utilizing Multi-Head Self-Attention, Grouped-Query Attention, and Rotary Position Embeddings, applies advanced parameter-efficient QLoRA fine-tuning, and packages the model into a real-time conversational interview application."
